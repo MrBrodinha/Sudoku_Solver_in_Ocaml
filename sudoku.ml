@@ -20,12 +20,6 @@ let printf_sudoku matrix =
       done;
 
     for j = 0 to t - 1 do
-      (*if size = 1 then
-        (if j != 0 && j mod temp = 0 then Printf.printf "| %d" matrix.(i).(j)
-        else 
-          (if j < t - 1 then Printf.printf "%d " matrix.(i).(j)
-          else Printf.printf "%d" matrix.(i).(j)))
-      else*)
         if j != 0 && j mod temp = 0 then Printf.printf "| ";
         if String.length((string_of_int)matrix.(i).(j)) < size then
           (for zero = 1 to (size-1) do
