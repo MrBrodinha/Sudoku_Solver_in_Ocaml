@@ -3,26 +3,35 @@ let t = read_int() (*tamanh tabuleiro*)
 (*caso o valor não tenha raiz inteira, não pode ser um tabuleiro de sudoku válido*)
 let () = if not (Float.is_integer(sqrt (float_of_int(t)))) then invalid_arg "Número não tem raiz inteira"
 
-let round_down x = Float.to_int (x)
-
 let printf_sudoku matrix =
   Printf.printf("\n");
   let temp = int_of_float (sqrt (float_of_int(t))) in
+  let size = String.length((string_of_int)t) in (*caso chegue ao digitos duplos/triplos/...*)
+
   for i = 0 to t - 1 do
     if i != 0 && i mod temp = 0 then
-      for i = 1 to temp do 
-        for j = 1 to temp * 2 do
+      for k = 1 to temp do 
+        for j = 1 to (temp * (2 + (size-1))) do
           Printf.printf "-";
         done;
-        if i != temp then Printf.printf " "
+        if k > 1 && k < temp then Printf.printf "-";
+        if k != temp then Printf.printf " "
         else Printf.printf "\n";
       done;
 
     for j = 0 to t - 1 do
-      if j != 0 && j mod temp = 0 then Printf.printf "| %d " matrix.(i).(j)
-      else 
-        (if j < t - 1 then Printf.printf "%d " matrix.(i).(j)
-        else Printf.printf "%d" matrix.(i).(j))
+      (*if size = 1 then
+        (if j != 0 && j mod temp = 0 then Printf.printf "| %d" matrix.(i).(j)
+        else 
+          (if j < t - 1 then Printf.printf "%d " matrix.(i).(j)
+          else Printf.printf "%d" matrix.(i).(j)))
+      else*)
+        if j != 0 && j mod temp = 0 then Printf.printf "| ";
+        if String.length((string_of_int)matrix.(i).(j)) < size then
+          (for zero = 1 to (size-1) do
+          Printf.printf "0"
+          done);
+        Printf.printf "%d " matrix.(i).(j);
     done;
     Printf.printf "\n"
   done
@@ -71,7 +80,7 @@ let rec resolver_sudoku matrix x y i =
     (solution := true);
 
   if !solution = false && i <= t then
-    (if matrix.(x).(y) = 0 then matrix.(x).(y) <- i;
+    (if matrix.(x).(y) = 0 then (matrix.(x).(y) <- i;
 
       if (verificar matrix x y) then
         (if y = t - 1 then
@@ -80,7 +89,13 @@ let rec resolver_sudoku matrix x y i =
           (if (resolver_sudoku matrix x (y+1) 1) then solution := true));
 
     if !solution = false then (matrix.(x).(y) <- 0;
-    solution := resolver_sudoku matrix x y (i+1)));
+    solution := resolver_sudoku matrix x y (i+1)))
+
+    else 
+      (if y = t - 1 then
+        (if (resolver_sudoku matrix (x+1) 0 1) then solution := true)
+      else 
+        (if (resolver_sudoku matrix x (y+1) 1) then solution := true))); 
   !solution
     
 let () =
