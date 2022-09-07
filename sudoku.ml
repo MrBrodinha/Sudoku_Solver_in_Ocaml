@@ -95,9 +95,3 @@ let rec resolver_sudoku matrix x y i =
 let () =
   if resolver_sudoku sudoku 0 0 1 then printf_sudoku sudoku
   else Printf.printf "falso\n"
-
-
-
-
-
-  
